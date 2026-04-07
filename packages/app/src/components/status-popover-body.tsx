@@ -245,6 +245,21 @@ export function StatusPopoverBody(props: { shown: Accessor<boolean> }) {
   const pluginCount = createMemo(() => plugins().length)
   const pluginEmpty = createMemo(() => pluginEmptyMessage(language.t("dialog.plugins.empty"), "opencode.json"))
 
+  const [skills, setSkills] = createStore({ items: [] as Array<{ name: string; description: string }>, loaded: false })
+
+  createEffect(() => {
+    if (!props.shown()) return
+    if (skills.loaded) return
+    void sdk.client.app.skills().then((result) => {
+      if (result.data) {
+        setSkills("items", result.data)
+        setSkills("loaded", true)
+      }
+    })
+  })
+
+  const skillCount = createMemo(() => skills.items.length)
+
   return (
     <div class="flex items-center gap-1 w-[360px] rounded-xl shadow-[var(--shadow-lg-border-base)]">
       <Tabs
@@ -271,6 +286,10 @@ export function StatusPopoverBody(props: { shown: Accessor<boolean> }) {
           <Tabs.Trigger value="plugins" data-slot="tab" class="text-12-regular">
             {pluginCount() > 0 ? `${pluginCount()} ` : ""}
             {language.t("status.popover.tab.plugins")}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="skills" data-slot="tab" class="text-12-regular">
+            {skillCount() > 0 ? `${skillCount()} ` : ""}
+            {language.t("status.popover.tab.skills")}
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -432,6 +451,30 @@ export function StatusPopoverBody(props: { shown: Accessor<boolean> }) {
                     <div class="flex items-center gap-2 w-full px-2 py-1">
                       <div class="size-1.5 rounded-full shrink-0 bg-icon-success-base" />
                       <span class="text-14-regular text-text-base truncate">{plugin}</span>
+                    </div>
+                  )}
+                </For>
+              </Show>
+            </div>
+          </div>
+        </Tabs.Content>
+
+        <Tabs.Content value="skills">
+          <div class="flex flex-col px-2 pb-2">
+            <div class="flex flex-col p-3 bg-background-base rounded-sm min-h-14">
+              <Show
+                when={skills.items.length > 0}
+                fallback={
+                  <div class="text-14-regular text-text-base text-center my-auto">
+                    No skills found. Add skills to ~/.config/opencode/skills/
+                  </div>
+                }
+              >
+                <For each={skills.items}>
+                  {(skill) => (
+                    <div class="flex items-center gap-2 w-full px-2 py-1">
+                      <div class="size-1.5 rounded-full shrink-0 bg-icon-success-base" />
+                      <span class="text-14-regular text-text-base truncate">{skill.name}</span>
                     </div>
                   )}
                 </For>

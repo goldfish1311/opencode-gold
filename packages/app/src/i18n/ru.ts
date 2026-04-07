@@ -556,6 +556,7 @@ export const dict = {
   "status.popover.tab.mcp": "MCP",
   "status.popover.tab.lsp": "LSP",
   "status.popover.tab.plugins": "Плагины",
+  "status.popover.tab.skills": "Навыки",
   "status.popover.action.manageServers": "Управлять серверами",
 
   "session.share.popover.title": "Опубликовать в интернете",
