@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OpenCode Dev",
-  "identifier": "ai.opencode.desktop.dev",
-  "mainBinaryName": "OpenCode",
+  "productName": "OpenCode Gold",
+  "identifier": "ai.opencode.desktop.gold",
+  "mainBinaryName": "opencode-gold",
   "version": "../package.json",
   "build": {
     "beforeDevCommand": "bun run dev",
@@ -33,7 +33,7 @@
     ],
     "active": true,
     "targets": ["deb", "rpm", "dmg", "nsis", "app"],
-    "externalBin": ["sidecars/opencode-cli"],
+    "externalBin": ["sidecars/opencode-gold-cli"],
     "linux": {
       "rpm": {
         "compression": {
