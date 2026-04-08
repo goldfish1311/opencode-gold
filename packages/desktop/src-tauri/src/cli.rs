@@ -1,4 +1,5 @@
 use futures::{FutureExt, Stream, StreamExt, future};
+use dirs;
 use process_wrap::tokio::CommandWrap;
 #[cfg(unix)]
 use process_wrap::tokio::ProcessGroup;
@@ -40,8 +41,8 @@ impl CommandWrapper for WinCreationFlags {
     }
 }
 
-const CLI_INSTALL_DIR: &str = ".opencode/bin";
-const CLI_BINARY_NAME: &str = "opencode";
+const CLI_INSTALL_DIR: &str = ".opencode-gold/bin";
+const CLI_BINARY_NAME: &str = "opencode-gold";
 const SHELL_ENV_TIMEOUT: Duration = Duration::from_secs(5);
 
 #[derive(serde::Deserialize, Debug)]
@@ -387,6 +388,14 @@ pub fn spawn_command(
             "XDG_STATE_HOME".to_string(),
             state_dir.to_string_lossy().to_string(),
         ),
+        (
+            "OPENCODE_CONFIG_DIR".to_string(),
+            dirs::config_dir()
+                .expect("Failed to resolve config dir")
+                .join("opencode-gold")
+                .to_string_lossy()
+                .to_string(),
+        ),
     ];
     envs.extend(
         extra_env
@@ -400,7 +409,7 @@ pub fn spawn_command(
             let version = app.package_info().version.to_string();
             let mut script = vec![
                 "set -e".to_string(),
-                "BIN=\"$HOME/.opencode/bin/opencode\"".to_string(),
+                "BIN=\"$HOME/.opencode-gold/bin/opencode-gold\"".to_string(),
                 "if [ ! -x \"$BIN\" ]; then".to_string(),
                 format!(
                     "  curl -fsSL https://opencode.ai/install | bash -s -- --version {} --no-modify-path",

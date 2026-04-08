@@ -407,6 +407,20 @@ export function StatusPopoverBody(props: { shown: Accessor<boolean> }) {
                   }}
                 </For>
               </Show>
+              <Button
+                variant="ghost"
+                class="mt-3 self-start h-8 px-3 py-1.5"
+                onClick={() => {
+                  const run = ++dialogRun
+                  void import("./dialog-add-mcp").then((x) => {
+                    if (dialogDead || dialogRun !== run) return
+                    dialog.show(() => <x.DialogAddMcp />)
+                  })
+                }}
+              >
+                <Icon name="plus-small" class="mr-1" />
+                Add MCP
+              </Button>
             </div>
           </div>
         </Tabs.Content>
